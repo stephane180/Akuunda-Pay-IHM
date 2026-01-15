@@ -4,10 +4,27 @@
 }
 
 /* Titres */
+.label-brand {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #3E1F47;
+}
+
 .label-title {
     -fx-font-size: 22px;
     -fx-font-weight: bold;
     -fx-text-fill: #3E1F47;
+}
+
+.brand-logo {
+    -fx-min-width: 28px;
+    -fx-min-height: 28px;
+    -fx-max-width: 28px;
+    -fx-max-height: 28px;
+    -fx-background-image: url("../images/logo.jpg");
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+    -fx-background-radius: 6;
 }
 
 .label-subtitle {
@@ -23,6 +40,14 @@
 }
 
 /* Bouton Continuer */
+.button {
+    -fx-cursor: hand;
+}
+
+.button:disabled {
+    -fx-cursor: default;
+}
+
 .button-next {
     -fx-background-color: #FF7A00;
     -fx-text-fill: white;
@@ -41,6 +66,7 @@
     -fx-border-radius: 15;
     -fx-background-radius: 15;
     -fx-padding: 15;
+    -fx-cursor: hand;
 }
 
 .country-card:hover {

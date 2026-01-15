@@ -12,6 +12,7 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.net.URI;
+import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -42,9 +43,12 @@ public class App extends Application {
     public void start(Stage stage) {
         mainContainer = new VBox(20);
         mainContainer.setPadding(new Insets(20, 25, 20, 25));
-        mainContainer.setStyle("-fx-background-color: #FFFFFF;");
 
         Scene scene = new Scene(mainContainer, 420, 750);
+        URL stylesheet = App.class.getResource("/css/style.css");
+        if (stylesheet != null) {
+            scene.getStylesheets().add(stylesheet.toExternalForm());
+        }
         buildMainSelectionScreen();
 
         stage.setTitle("Akuunda Pay - eSIM");
@@ -58,11 +62,16 @@ public class App extends Application {
     private void buildMainSelectionScreen() {
         mainContainer.getChildren().clear();
         
+        HBox brandRow = new HBox(10);
+        brandRow.setAlignment(Pos.CENTER_LEFT);
+        Region logoView = createLogoRegion();
+        brandRow.getChildren().add(logoView);
         Label brand = new Label("Akuunda Pay");
-        brand.setStyle("-fx-font-weight: bold; -fx-font-size: 20; -fx-text-fill: " + PRIMARY_PURPLE + ";");
+        brand.getStyleClass().add("label-brand");
+        brandRow.getChildren().add(brand);
         
         Label title = new Label("Choisissez une destination");
-        title.setStyle("-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: " + PRIMARY_PURPLE + ";");
+        title.getStyleClass().add("label-title");
 
         destinationList = new VBox(15);
         
@@ -76,11 +85,11 @@ public class App extends Application {
         nextBtn.setMaxWidth(Double.MAX_VALUE);
         nextBtn.setMinHeight(55);
         nextBtn.setDisable(true);
-        nextBtn.setStyle("-fx-background-color: #CCCCCC; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 15;");
+        nextBtn.getStyleClass().add("button-next");
         
         nextBtn.setOnAction(e -> showPlansPage(selectedCountryName, selectedCountryIso3));
 
-        mainContainer.getChildren().addAll(brand, title, scrollPane, nextBtn);
+        mainContainer.getChildren().addAll(brandRow, title, scrollPane, nextBtn);
         if (!allCountriesData.isEmpty()) updateListView(allCountriesData);
     }
 
@@ -93,7 +102,7 @@ public class App extends Application {
         backBtn.setOnAction(e -> buildMainSelectionScreen());
 
         Label title = new Label("Offres pour " + countryName);
-        title.setStyle("-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: " + PRIMARY_PURPLE + ";");
+        title.getStyleClass().add("label-title");
 
         // Conteneur interne pour les cartes
         VBox plansListContainer = new VBox(15);
@@ -207,7 +216,7 @@ public class App extends Application {
         HBox card = new HBox(15);
         card.setAlignment(Pos.CENTER_LEFT);
         card.setPadding(new Insets(10));
-        card.setStyle("-fx-background-color: white; -fx-border-color: #E5E5EA; -fx-border-radius: 10; -fx-cursor: hand;");
+        card.getStyleClass().add("country-card");
         
         try {
             ImageView iv = new ImageView(new Image(flagUrl, true));
@@ -220,15 +229,24 @@ public class App extends Application {
         card.getChildren().add(n);
 
         card.setOnMouseClicked(e -> {
-            if (selectedCountryCard != null) selectedCountryCard.setStyle("-fx-background-color: white; -fx-border-color: #E5E5EA; -fx-border-radius: 10;");
+            if (selectedCountryCard != null) {
+                selectedCountryCard.getStyleClass().remove("country-card-selected");
+            }
             selectedCountryCard = card;
             this.selectedCountryName = name;
             this.selectedCountryIso3 = iso3;
-            card.setStyle("-fx-background-color: #FAF9FB; -fx-border-color: " + ACCENT_ORANGE + "; -fx-border-width: 2; -fx-border-radius: 10;");
             nextBtn.setDisable(false);
-            nextBtn.setStyle("-fx-background-color: " + ACCENT_ORANGE + "; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 15;");
+            if (!card.getStyleClass().contains("country-card-selected")) {
+                card.getStyleClass().add("country-card-selected");
+            }
         });
         return card;
+    }
+
+    private Region createLogoRegion() {
+        Region logo = new Region();
+        logo.getStyleClass().add("brand-logo");
+        return logo;
     }
 
     public static void main(String[] args) { launch(); }
